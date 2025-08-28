@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voting Eligibility Checker</title>
+    <link rel="stylesheet" href="style task2.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Voting Eligibility Checker</h1>
+            <p>Check if you're eligible to vote in elections</p>
+        </div>
+        
+        <div class="form-container">
+            <div class="input-group">
+                <label for="age">Your Age</label>
+                <input type="number" id="age" min="1" max="120" placeholder="Enter your age">
+            </div>
+            
+            <div class="input-group">
+                <label for="citizenship">Are you a citizen?</label>
+                <div class="radio-group">
+                    <input type="radio" id="citizen-yes" name="citizenship" value="true">
+                    <label for="citizen-yes">Yes</label>
+                    
+                    <input type="radio" id="citizen-no" name="citizenship" value="false">
+                    <label for="citizen-no">No</label>
+                </div>
+            </div>
+            
+            <button id="check-btn">Check Eligibility</button>
+            
+            <div class="result" id="result">
+                <div class="result-icon" id="result-icon">
+                    <i class="fas fa-question-circle"></i>
+                </div>
+                <h3 id="result-title">Eligibility Status</h3>
+                <p id="result-description">Please enter your information to check voting eligibility</p>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p>Voting Eligibility Checker &copy; 2023</p>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const checkBtn = document.getElementById('check-btn');
+            const ageInput = document.getElementById('age');
+            const citizenYes = document.getElementById('citizen-yes');
+            const citizenNo = document.getElementById('citizen-no');
+            const resultDiv = document.getElementById('result');
+            const resultIcon = document.getElementById('result-icon');
+            const resultTitle = document.getElementById('result-title');
+            const resultDescription = document.getElementById('result-description');
+            
+            checkBtn.addEventListener('click', function() {
+                // Get input values
+                const age = parseInt(ageInput.value);
+                const isCitizen = citizenYes.checked ? true : citizenNo.checked ? false : null;
+                
+                // Validate inputs
+                if (isNaN(age) || age <= 0 || age > 120) {
+                    showResult('error', 'Invalid Input', 'Please enter a valid age between 1 and 120');
+                    return;
+                }
+                
+                if (isCitizen === null) {
+                    showResult('error', 'Selection Required', 'Please select your citizenship status');
+                    return;
+                }
+                
+                // Check eligibility based on nested conditions
+                if (age >= 18 && isCitizen) {
+                    showResult('success', 'Eligible to Vote', 'You meet all the requirements to vote in elections!');
+                } else if (!isCitizen) {
+                    showResult('warning', 'Not a Citizen', 'Only citizens are eligible to vote in elections.');
+                } else if (age < 18) {
+                    showResult('warning', 'Too Young to Vote', 'You must be at least 18 years old to vote.');
+                }
+            });
+            
+            function showResult(type, title, description) {
+                // Reset all classes
+                resultDiv.className = 'result';
+                resultIcon.innerHTML = '';
+                
+                // Set appropriate classes and content based on result type
+                if (type === 'success') {
+                    resultDiv.classList.add('success');
+                    resultIcon.innerHTML = '<i class="fas fa-check-circle"></i>';
+                } else if (type === 'warning') {
+                    resultDiv.classList.add('warning');
+                    resultIcon.innerHTML = '<i class="fas fa-exclamation-circle"></i>';
+                } else if (type === 'error') {
+                    resultDiv.classList.add('error');
+                    resultIcon.innerHTML = '<i class="fas fa-times-circle"></i>';
+                }
+                
+                // Update text content
+                resultTitle.textContent = title;
+                resultDescription.textContent = description;
+                
+                // Show result
+                resultDiv.style.display = 'block';
+            }
+        });
+    </script>
+</body>
+</html>
