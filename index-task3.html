@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Object Property Checker</title>
+    <link rel="stylesheet" href="style-task3.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Object Property Checker</h1>
+            <p>Check if properties exist in a person object</p>
+        </div>
+        
+        <div class="form-container">
+            <div class="object-display">
+                <h3>Current Person Object</h3>
+                <pre id="object-display">{
+  "name": "John Doe",
+  "age": 25,
+  "occupation": "Developer"
+}</pre>
+            </div>
+            
+            <div class="input-group">
+                <label for="property">Property to Check</label>
+                <input type="text" id="property" placeholder="Enter property name (e.g., age)">
+            </div>
+            
+            <button id="check-btn">Check Property</button>
+            
+            <div class="result" id="result">
+                <div class="result-icon" id="result-icon">
+                    <i class="fas fa-question-circle"></i>
+                </div>
+                <h3 id="result-title">Property Status</h3>
+                <p id="result-description">Enter a property name to check if it exists</p>
+            </div>
+
+            <div class="actions">
+                <h3>Modify Object</h3>
+                <div class="action-buttons">
+                    <button id="add-btn">Add Property</button>
+                    <button id="remove-btn">Remove Property</button>
+                    <button id="reset-btn">Reset Object</button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p>Object Property Checker &copy; 2023</p>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize person object
+            let person = {
+                name: "John Doe",
+                age: 25,
+                occupation: "Developer"
+            };
+
+            const checkBtn = document.getElementById('check-btn');
+            const propertyInput = document.getElementById('property');
+            const resultDiv = document.getElementById('result');
+            const resultIcon = document.getElementById('result-icon');
+            const resultTitle = document.getElementById('result-title');
+            const resultDescription = document.getElementById('result-description');
+            const objectDisplay = document.getElementById('object-display');
+            const addBtn = document.getElementById('add-btn');
+            const removeBtn = document.getElementById('remove-btn');
+            const resetBtn = document.getElementById('reset-btn');
+
+            // Update object display
+            function updateObjectDisplay() {
+                objectDisplay.textContent = JSON.stringify(person, null, 2);
+            }
+
+            // Check property existence
+            checkBtn.addEventListener('click', function() {
+                const property = propertyInput.value.trim();
+                
+                // Validate input
+                if (!property) {
+                    showResult('error', 'Input Required', 'Please enter a property name to check');
+                    return;
+                }
+                
+                // Check if property exists using the 'in' operator
+                if (property in person) {
+                    showResult('success', 'Property Exists', `The property "${property}" exists with value: ${JSON.stringify(person[property])}`);
+                } else {
+                    showResult('warning', 'Property Not Found', `The property "${property}" is not defined in the object`);
+                }
+            });
+
+            // Add property to object
+            addBtn.addEventListener('click', function() {
+                const property = propertyInput.value.trim();
+                
+                if (!property) {
+                    showResult('error', 'Input Required', 'Please enter a property name to add');
+                    return;
+                }
+                
+                const value = prompt(`Enter value for property "${property}":`);
+                if (value !== null) {
+                    person[property] = value;
+                    updateObjectDisplay();
+                    showResult('success', 'Property Added', `Added "${property}" with value: ${value}`);
+                }
+            });
+
+            // Remove property from object
+            removeBtn.addEventListener('click', function() {
+                const property = propertyInput.value.trim();
+                
+                if (!property) {
+                    showResult('error', 'Input Required', 'Please enter a property name to remove');
+                    return;
+                }
+                
+                if (property in person) {
+                    delete person[property];
+                    updateObjectDisplay();
+                    showResult('success', 'Property Removed', `Removed "${property}" from the object`);
+                } else {
+                    showResult('warning', 'Property Not Found', `Cannot remove "${property}" - it doesn't exist in the object`);
+                }
+            });
+
+            // Reset object to default
+            resetBtn.addEventListener('click', function() {
+                person = {
+                    name: "John Doe",
+                    age: 25,
+                    occupation: "Developer"
+                };
+                updateObjectDisplay();
+                showResult('success', 'Object Reset', 'The object has been reset to default values');
+            });
+
+            function showResult(type, title, description) {
+                // Reset all classes
+                resultDiv.className = 'result';
+                resultIcon.innerHTML = '';
+                
+                // Set appropriate classes and content based on result type
+                if (type === 'success') {
+                    resultDiv.classList.add('success');
+                    resultIcon.innerHTML = '<i class="fas fa-check-circle"></i>';
+                } else if (type === 'warning') {
+                    resultDiv.classList.add('warning');
+                    resultIcon.innerHTML = '<i class="fas fa-exclamation-circle"></i>';
+                } else if (type === 'error') {
+                    resultDiv.classList.add('error');
+                    resultIcon.innerHTML = '<i class="fas fa-times-circle"></i>';
+                }
+                
+                // Update text content
+                resultTitle.textContent = title;
+                resultDescription.textContent = description;
+                
+                // Show result
+                resultDiv.style.display = 'block';
+            }
+
+            // Initial display update
+            updateObjectDisplay();
+        });
+    </script>
+</body>
+</html>
